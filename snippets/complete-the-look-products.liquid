@@ -39,28 +39,50 @@
                   <div class="ctl_product--desc">{{ product.description }}</div>
                 {% endif %}
               </div>
-              <form class="ctl_product--form display-flex jc-space_between">
-                {% if product.has_only_default_variant %}
-                  <span class="only_default_variant" data-product-id="{{ product.selected_or_first_available_variant.id }}">one size</span>
-                {% else %}
-                  <select name="id" data-productid="{{ product.id }}" data-product-select class="variants_selector uppercase">
-                    {%- for variant in product.variants -%}
-                      {%- if variant.available -%}
-                        <option {% if variant == product.selected_or_first_available_variant %}
-                          selected="selected"{% endif %}
-                          value="{{ variant.id }}">
-                          {{ variant.title }}
-                        </option>
-                      {%- else -%}
-                        <option disabled="disabled">
-                          {{ variant.title }} - sold out
-                        </option>
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </select>
-                {% endif %}
-                <button type="button" class="add-to-cart" add-to-cart>Add to bag</button>
-              </form>
+              <product-form>
+                {% form 'product', product, class: 'ctl_product--form display-flex jc-space_between' %}
+                  {% if product.has_only_default_variant %}
+                    <input
+                      type="hidden"
+                      name="id"
+                      value="{{ product.selected_or_first_available_variant.id }}"
+                      disabled
+                    >
+                    <span class="only_default_variant">one size</span>
+                  {% else %}
+                    <select name="id" data-productid="{{ product.id }}" data-product-select class="variants_selector uppercase">
+                      {%- for variant in product.variants -%}
+                        {%- if variant.available -%}
+                          <option {% if variant == product.selected_or_first_available_variant %}
+                            selected="selected"{% endif %}
+                            value="{{ variant.id }}">
+                            {{ variant.title }}
+                          </option>
+                        {%- else -%}
+                          <option disabled="disabled">
+                            {{ variant.title }} - sold out
+                          </option>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </select>
+                  {% endif %}
+                  <button type="submit" class="add-to-cart" add-to-cart>
+                    <span>Add to bag</span>
+                    <div class="loading-overlay__spinner hidden">
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        role="presentation"
+                        class="spinner"
+                        viewBox="0 0 66 66"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                      </svg>
+                    </div>
+                  </button>
+                {% endform %}
+              </product-form>
             </div>
           </div>
         </div>

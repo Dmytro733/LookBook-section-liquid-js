@@ -162,6 +162,10 @@
   margin-top: 10px;
 }
 
+.ctl_container form{
+  gap: 10px;
+}
+
 .ctl_container .only_default_variant{
   text-transform: capitalize;
 }
@@ -194,7 +198,6 @@
 .ctl_container .add-to-cart{
   width: 70%;
   min-width: 150px;
-  margin-left: 10px;
   padding: 10px;
   font-size: 15px;
 }
