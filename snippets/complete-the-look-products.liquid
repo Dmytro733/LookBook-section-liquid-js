@@ -1,0 +1,76 @@
+{% unless product.metafields.custom.complete_the_look == blank %}
+  {% assign complete_the_look_products = product.metafields.custom.complete_the_look.value %}
+  <div class="ctl_container">
+    <div class="ctl_products h100">
+      {% for product in complete_the_look_products %}
+        <div class="ctl_product display-flex fd-column">
+          <div class="ctl_product--container h100 display-flex">
+            <div class="ctl_product--img product__media h100 display-flex jc-center">
+              {%- assign img_url = product | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <a href="{{ product.url }}">
+                {{ product.featured_media | img_url: 'master' | img_tag:
+                  loading: 'lazy',
+                  alt: product.featured_media.alt
+                }}
+              </a>
+            </div>
+            <div class="ctl_product--content display-flex fd-column jc-space_between">
+              <div class="ctl_product--meta">
+                <div class="ctl_product--details display-flex jc-space_between uppercase ai-center">
+                  <div class="ctl_product--title">
+                    {{ product.title }}
+                  </div>
+                  <div class="ctl_product--price">
+                    {% if product.compare_at_price != product.price %}
+                      <small class="cart__price cart__price--strikethrough">
+                        {{ product.compare_at_price | money }}
+                      </small>
+                      <span class="cart__price cart__discount">
+                        {{ product.price | money }}
+                      </span>
+                    {% else %}
+                      <span class="cart__price">
+                        {{ product.price | money }}
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if product.description != blank %}
+                  <div class="ctl_product--desc">{{ product.description }}</div>
+                {% endif %}
+              </div>
+              <form class="ctl_product--form display-flex jc-space_between">
+                {% if product.has_only_default_variant %}
+                  <span class="only_default_variant" data-product-id="{{ product.selected_or_first_available_variant.id }}">one size</span>
+                {% else %}
+                  <select name="id" data-productid="{{ product.id }}" data-product-select class="variants_selector uppercase">
+                    {%- for variant in product.variants -%}
+                      {%- if variant.available -%}
+                        <option {% if variant == product.selected_or_first_available_variant %}
+                          selected="selected"{% endif %}
+                          value="{{ variant.id }}">
+                          {{ variant.title }}
+                        </option>
+                      {%- else -%}
+                        <option disabled="disabled">
+                          {{ variant.title }} - sold out
+                        </option>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </select>
+                {% endif %}
+                <button type="button" class="add-to-cart" add-to-cart>Add to bag</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <style>
+    .modal .modal__inner .modal__inner--bloks{
+      justify-content: center;
+    }
+  </style>
+{% endunless %}

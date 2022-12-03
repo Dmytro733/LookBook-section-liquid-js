@@ -945,3 +945,60 @@ class ProductRecommendations extends HTMLElement {
 }
 
 customElements.define('product-recommendations', ProductRecommendations);
+
+class lookbookSection extends HTMLElement {
+  constructor() {
+    super();
+
+    this.wrap = this;
+    this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+    this.wrap.querySelectorAll('.main_look--item').forEach(look => {look.addEventListener('click', this.openModal.bind(this))})
+  }
+
+  openModal(event){
+    var modal = document.getElementById(event.currentTarget.getAttribute('aria-controls'));
+
+    fetch("".concat(event.currentTarget.getAttribute('data-product-url'), "?view=modal-view"), {
+      credentials: 'same-origin',
+      method: 'GET'
+    })
+    .then((response) => {
+      response.text().then((content) => {
+        modal.querySelector('.modal__inner').innerHTML = content;
+        modal.setAttribute('aria-hidden', 'false')
+        document.querySelector('body').style.overflow='hidden'
+
+        modal.querySelectorAll('[add-to-cart]').forEach(btn => {
+          btn.addEventListener('click', event =>{
+          this.addToCart(event.currentTarget.closest('.ctl_product--content'))
+        })})
+      });
+    })
+  }
+
+  addToCart(targetProductWrapElem){
+    
+    let selectedVariant = Array.from(targetProductWrapElem.querySelectorAll('option')).find(option => {return option.selected})
+    let selectedVariantId;
+
+    if(!selectedVariant){
+      selectedVariantId = targetProductWrapElem.querySelector('.only_default_variant').getAttribute('data-product-id')
+    }else{
+      selectedVariantId = selectedVariant.value;
+    }
+
+    fetch(window.routes.cart_add_url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({items: [{ "id":selectedVariantId, "quantity": 1 }]})
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      this.cart.renderContents(response)
+    })
+  }
+}
+
+customElements.define('lookbook-products', lookbookSection);

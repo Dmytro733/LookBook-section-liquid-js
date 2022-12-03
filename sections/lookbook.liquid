@@ -1,0 +1,126 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-modal.css' | asset_url | stylesheet_tag }}
+
+{{ 'section-lookbook.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign products_to_display = section.settings.collection.all_products_count
+
+  if section.settings.collection.all_products_count > section.settings.products_to_show
+    assign products_to_display = section.settings.products_to_show
+    assign more_in_collection = true
+  endif
+-%}
+
+<div class="color-{{ section.settings.color_scheme }} isolate gradient">
+  <lookbook-products class="collection section-{{ section.id }}-padding">
+      <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
+        {%- if section.settings.title != blank -%}
+          <h2 class="title {{ section.settings.heading_size }}">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+      </div>
+
+    <div class="LookBookElements-mobile-gutter">
+      <ul id="MainLookItems-{{ section.id }}" class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %}" role="list" aria-label="{{ 'general.slider.name' | t }}">
+        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+          {% assign isMainLook = false %}
+
+          {% for tag in product.tags %}
+            {% if tag == "main_look" %}
+              {% assign isMainLook = true %}
+            {% endif %}
+          {% endfor %}
+
+          <li id="MainLookItem-{{ section.id }}-{{ forloop.index }}" class="grid__item main_look--item" data-product-url="{{ product.url }}" aria-controls="QuickShopModal-{{ section.id }}_modal">
+            {% render 'card-product',
+              card_product: product,
+              section_id: section.id,
+              isMainLook: isMainLook
+            %}
+          </li>
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            <li class="grid__item">
+              {% render 'card-product', show_vendor: true %}
+            </li>
+          {%- endfor -%}
+        {%- endfor -%}
+      </ul>
+  </lookbook-products>
+</div>
+
+{%- comment -%} {% for product in section.settings.collection.products limit: section.settings.products_to_show %}
+  {%- render 'modal', product: product -%}
+{% endfor %} {%- endcomment -%}
+
+{%- render 'modal' -%}
+
+{% schema %}
+{
+  "name": "LookBook",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "LookBook",
+      "label": "Collection title"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Medium"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "label": "Products to show"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LookBook"
+    }
+  ]
+}
+{% endschema %}
