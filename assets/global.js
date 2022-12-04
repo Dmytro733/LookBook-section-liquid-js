@@ -952,11 +952,17 @@ class lookbookSection extends HTMLElement {
 
     this.wrap = this;
     this.modal = this.wrap.querySelector('.modal');
+    this.closeModalBtn = this.wrap.querySelector('.close_modal')
 
-    this.wrap.querySelectorAll('.main_look--item').forEach(look => {look.addEventListener('click', this.openModal.bind(this))})
-    window.addEventListener('keydown', e => { if(e.which == 27) this.closeModal() })
+    this.action();
+  }
 
-    window.addEventListener('pointerdown', e => { if(e.target == this.modal) this.closeModal() })
+
+  action() {
+    this.wrap.querySelectorAll('.main_look--item').forEach(look => {look.addEventListener('pointerdown', this.openModal.bind(this))})
+    window.addEventListener('keydown', e => { if(e.which == 27) this.closeModal() });
+    window.addEventListener('pointerdown', e => { if(e.target == this.modal) this.closeModal() });
+    this.closeModalBtn.addEventListener('click', this.closeModal.bind(this));
   }
 
   openModal(event) {
@@ -966,16 +972,16 @@ class lookbookSection extends HTMLElement {
     })
     .then((response) => {
       response.text().then((content) => {
-        this.modal.querySelector('.modal__inner').innerHTML = content;
+        this.modal.querySelector('.modal__content').innerHTML = content;
         this.modal.setAttribute('aria-hidden', 'false');
-        document.querySelector('body').style.overflow='hidden';
+        document.querySelector('body').classList.add('overflow-hidden');
       });
     })
   }
 
   closeModal() {
     this.modal.setAttribute('aria-hidden', 'true');
-    document.querySelector('body').style.overflow='auto';
+    document.querySelector('body').classList.remove('overflow-hidden');
   }
 }
 

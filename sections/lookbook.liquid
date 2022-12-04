@@ -1,41 +1,41 @@
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-modal.css' | asset_url | stylesheet_tag }}
-
-{{ 'section-lookbook.css' | asset_url | stylesheet_tag }}
-
-<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
-
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
+<lookbook-products class="{{ section.id }}--LookBook">
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'component-modal.css' | asset_url | stylesheet_tag }}
+  
+  {{ 'section-lookbook.css' | asset_url | stylesheet_tag }}
+  
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  
+  {%- style -%}
     .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
     }
-  }
-{%- endstyle -%}
-
-{%- liquid
-  assign products_to_display = section.settings.collection.all_products_count
-
-  if section.settings.collection.all_products_count > section.settings.products_to_show
-    assign products_to_display = section.settings.products_to_show
-    assign more_in_collection = true
-  endif
--%}
-
-<div class="color-{{ section.settings.color_scheme }} isolate gradient">
-  <lookbook-products class="collection section-{{ section.id }}-padding">
-      <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
-        {%- if section.settings.title != blank -%}
-          <h2 class="title {{ section.settings.heading_size }}">{{ section.settings.title | escape }}</h2>
-        {%- endif -%}
-      </div>
+  
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+  {%- endstyle -%}
+  
+  {%- liquid
+    assign products_to_display = section.settings.collection.all_products_count
+  
+    if section.settings.collection.all_products_count > section.settings.products_to_show
+      assign products_to_display = section.settings.products_to_show
+      assign more_in_collection = true
+    endif
+  -%}
+  
+  <div class="collection section-{{ section.id }}-padding">
+    <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
+      {%- if section.settings.title != blank -%}
+        <h2 class="title {{ section.settings.heading_size }}">{{ section.settings.title | escape }}</h2>
+      {%- endif -%}
+    </div>
 
     <div class="LookBookElements-mobile-gutter">
       <ul id="MainLookItems-{{ section.id }}" class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %}" role="list" aria-label="{{ 'general.slider.name' | t }}">
@@ -63,12 +63,9 @@
           {%- endfor -%}
         {%- endfor -%}
       </ul>
-  </lookbook-products>
-</div>
+    </div>
+</lookbook-products>
 
-{%- comment -%} {% for product in section.settings.collection.products limit: section.settings.products_to_show %}
-  {%- render 'modal', product: product -%}
-{% endfor %} {%- endcomment -%}
 
 {%- render 'modal' -%}
 
@@ -76,7 +73,6 @@
 {
   "name": "LookBook",
   "tag": "section",
-  "class": "section",
   "settings": [
     {
       "type": "text",
