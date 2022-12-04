@@ -951,28 +951,31 @@ class lookbookSection extends HTMLElement {
     super();
 
     this.wrap = this;
-    this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+    this.modal = this.wrap.querySelector('.modal');
+
     this.wrap.querySelectorAll('.main_look--item').forEach(look => {look.addEventListener('click', this.openModal.bind(this))})
+    window.addEventListener('keydown', e => { if(e.which == 27) this.closeModal() })
+
+    window.addEventListener('pointerdown', e => { if(e.target == this.modal) this.closeModal() })
   }
 
   openModal(event) {
-    var modal = document.getElementById(event.currentTarget.getAttribute('aria-controls'));
-
     fetch("".concat(event.currentTarget.getAttribute('data-product-url'), "?view=modal-view"), {
       credentials: 'same-origin',
       method: 'GET'
     })
     .then((response) => {
       response.text().then((content) => {
-        modal.querySelector('.modal__inner').innerHTML = content;
-        modal.setAttribute('aria-hidden', 'false');
+        this.modal.querySelector('.modal__inner').innerHTML = content;
+        this.modal.setAttribute('aria-hidden', 'false');
         document.querySelector('body').style.overflow='hidden';
       });
     })
   }
 
   closeModal() {
-
+    this.modal.setAttribute('aria-hidden', 'true');
+    document.querySelector('body').style.overflow='auto';
   }
 }
 

@@ -174,8 +174,9 @@
 .ctl_container .variants_selector{
   text-align: center;
   min-width: 40px;
-  font-size: 19px;
   max-width: 70px;
+  width: 60px;
+  font-size: 19px;
   font-weight: 900;
   font-family: inherit;
   line-height: 1;
@@ -196,8 +197,59 @@
 }
 
 .ctl_container .add-to-cart{
-  width: 70%;
+  width: 75%;
   min-width: 150px;
   padding: 10px;
   font-size: 15px;
+}
+
+@media screen and (max-width: 767px) {
+  .LookBookElements-mobile-gutter{
+    padding: 0 20px;
+  }
+
+  .LookBookElements-mobile-gutter .product-grid{
+    flex-direction: column;
+  }
+
+  .modal .modal__inner{
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .LookBookElements-mobile-gutter .product-grid .main_look--item{
+    width: 100%;
+    max-width: none;
+  }
+
+  .modal .modal__inner .modal__inner--bloks{
+    flex-direction: column;
+    overflow: scroll;
+  }
+
+  .modal .modal__inner .modal__inner--gallery{
+    width: 100%;
+  }
+
+  .modal .modal__inner .ctl_container{
+    padding: 0;
+  }
+
+  .modal .ctl_container .ctl_products .ctl_product{
+    height: auto;
+  }
+
+  .modal .modal__inner .ctl_product--container{
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .ctl_container .ctl_product--img{
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .ctl_container form{
+    margin-top: 20px;
+  }
 }
